@@ -63,7 +63,7 @@ class Heap:
     # Retrieve, but not remove, the root of the heap.
     def peek(self):
         if self.heap:
-            return heap[0]
+            return self.heap[0]
 
     # Swap the values of two nodes.
     def _swap(self, p, q):
