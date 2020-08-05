@@ -1,53 +1,70 @@
+# Implementation of min heap.
 class Heap:
     def __init__(self, iterable):
         self.heap = [item for item in iterable]
-        self.heapify()
+        self._heapify()
 
-    def get_size(self):
+    # Get size of the heap.
+    def size(self):
         return len(self.heap)
 
-    def is_root(self, idx):
+    # Check is the node of idx is a root or not.
+    def _is_root(self, idx):
         return idx == 0
 
-    def is_leaf(self, idx):
-        return self.get_left(idx) > self.get_size()
+    # Check is the node of idx is a leaf or not.
+    def _is_leaf(self, idx):
+        return self._left_child(idx) > self.size()
 
-    def get_parent(self, idx):
+    # Get parent's index.
+    def _parent(self, idx):
         return (idx - 1) // 2
 
-    def get_left(self, idx):
+    # Get left child's index.
+    def _left_child(self, idx):
         return 2 * idx + 1
 
-    def get_right(self, idx):
+    # Get right child's index.
+    def _right_chid(self, idx):
         return 2 * idx + 2
 
-    def heapify(self, idx=None):
+    # Heapify the node of the given idx.
+    # If the idx is not given, _heapify from the root.
+    def _heapify(self, idx=None):
         if idx == None:
-            for i in range(self.get_size() // 2 - 1, -1, -1):
-                self.heapify(i)
+            for i in range(self.size() // 2 - 1, -1, -1):
+                self._heapify(i)
         else:
-            if not self.is_leaf(idx):
-                if self.heap[idx] > self.heap[self.get_left(idx)] or self.get_right(idx) < self.get_size() and self.heap[idx] > self.heap[self.get_right(idx)]:
-                    if self.get_right(idx) < self.get_size() and self.heap[self.get_right(idx)] < self.heap[self.get_left(idx)]:
-                        self.swap(idx, self.get_right(idx))
-                        self.heapify(self.get_right(idx))
+            if not self._is_leaf(idx):
+                if self.heap[idx] > self.heap[self._left_child(idx)] or self._right_chid(idx) < self.size() and self.heap[idx] > self.heap[self._right_chid(idx)]:
+                    if self._right_chid(idx) < self.size() and self.heap[self._right_chid(idx)] < self.heap[self._left_child(idx)]:
+                        self._swap(idx, self._right_chid(idx))
+                        self._heapify(self._right_chid(idx))
                     else:
-                        self.swap(idx, self.get_left(idx))
-                        self.heapify(self.get_left(idx))
+                        self._swap(idx, self._left_child(idx))
+                        self._heapify(self._left_child(idx))
 
+    # Insert an element into the heap.
     def push(self, element):
         self.heap.append(element)
-        cur = self.get_size() - 1
-        while not self.is_root(cur) and self.heap[cur] < self.heap[self.get_parent(cur)]:
-            self.swap(cur, self.get_parent(cur))
-            cur = self.get_parent(cur)
+        cur = self.size() - 1
+        while not self._is_root(cur) and self.heap[cur] < self.heap[self._parent(cur)]:
+            self._swap(cur, self._parent(cur))
+            cur = self._parent(cur)
 
+    # Remove the element from the heap, and return it.
     def pop(self):
         if self.heap:
-            self.swap(0, self.get_size() - 1)
+            self._swap(0, self.size() - 1)
             element = self.heap.pop()
-            self.heapify()
+            self._heapify()
             return element
 
-    def swap(self, p, q):
+    # Retrieve, but not remove, the root of the heap.
+    def peek(self):
+        if self.heap:
+            return heap[0]
+
+    # Swap the values of two nodes.
+    def _swap(self, p, q):
         self.heap[p], self.heap[q] = self.heap[q], self.heap[p]
